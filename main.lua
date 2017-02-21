@@ -1,7 +1,7 @@
 dofile("credentials.lua")
 
-sleeptime = 60000000 -- 600 seconds
-numdata = 10
+sleeptime = 600000000 -- 600 seconds
+numdata = 100
 t=-999
 h=-999
 
