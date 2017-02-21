@@ -11,19 +11,6 @@ function startup()
     end
 end
 
--- first connect to wifi
-print("Connecting to WiFi access point..."..WIFI_SSID)
-wifi.setmode(wifi.STATION)
-wifi.sta.config(WIFI_SSID, WIFI_PASSWORD)
--- wifi.sta.connect() not necessary because config() uses auto-connect=true by default
-tmr.alarm(1, 1000, 1, function()
-    if wifi.sta.getip() == nil then
-        print("Waiting for IP address...")
-    else
-        tmr.stop(1)
-        print("WiFi connection established, IP address: " .. wifi.sta.getip())
-        print("You have 3 seconds to abort")
-        print("Waiting...")
-        tmr.alarm(0, 100, 0, startup)
-    end
-end)
+--tmr.stop(1)
+print("You have 1 second to abort")
+tmr.alarm(0, 100, tmr.ALARM_SINGLE, startup)

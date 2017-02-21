@@ -1,7 +1,7 @@
 dofile("credentials.lua")
 
-sleeptime = 600000000 -- 600 seconds
-numdata = 100
+sleeptime = 60000000 -- 600 seconds
+numdata = 10
 t=-999
 h=-999
 
@@ -43,21 +43,40 @@ if t ~= -999 then
   
     jsok, vjson = pcall(cjson.encode, tabl)
     if jsok then
-      http.post(APPENGINE_SERVER,
-        'Content-Type: application/json\r\n',
-        vjson,
-        function(code, data)
-          if (code < 0) then
-            print("HTTP request failed")
-          else
-            print(code, data)
-          end
-          node.dsleep(sleeptime)
+        ----------------------------------------------------------------------------------
+        -- Connect to wifi and POST data
+        --
+        print("Connecting to WiFi access point..."..WIFI_SSID)
+        wifi.setmode(wifi.STATION)
+        wifi.sta.config(WIFI_SSID, WIFI_PASSWORD)
+        -- wifi.sta.connect() not necessary because config() uses auto-connect=true by default
+        tmr.alarm(1, 1000, tmr.ALARM_AUTO, function()
+            if wifi.sta.getip() == nil then
+                print("Waiting for IP address...")
+            else
+                tmr.stop(1) -- also tmr.unregister(1) ?
+                http.post(APPENGINE_SERVER,
+                  'Content-Type: application/json\r\n',
+                  vjson,
+                  function(code, data)
+                    if (code < 0) then
+                      print("HTTP request failed")
+                    else
+                      print(code, data)
+                    end
+                    -- turn off
+                    node.dsleep(sleeptime)
+                  end)
+            end
         end)
+
     else
+      -- json is not ok
       node.dsleep(sleeptime)
     end
   else
+    -- count < numdata
+    print("sleep")
     node.dsleep(sleeptime)
   end
 else
