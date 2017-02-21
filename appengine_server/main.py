@@ -44,7 +44,7 @@ class MainPage(webapp2.RequestHandler):
                     (cdate, t_med, h_med, t1, t9, h1, h9))
         
         path = os.path.join(os.path.dirname(__file__), "index.html")
-        index = template.render(path, {'data': '[' + '\n'.join(sorted(datastr)) + ']'})
+        index = template.render(path, {'data': '[' + '\n'.join(sorted(datastr)).rstrip(',') + ']'})
         self.response.out.write(index)
 
 
