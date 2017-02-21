@@ -24,6 +24,6 @@ tmr.alarm(1, 1000, 1, function()
         print("WiFi connection established, IP address: " .. wifi.sta.getip())
         print("You have 3 seconds to abort")
         print("Waiting...")
-        tmr.alarm(0, 3000, 0, startup)
+        tmr.alarm(0, 100, 0, startup)
     end
 end)

@@ -1,8 +1,10 @@
 dofile("credentials.lua")
 
-local sleeptime = 60000000 -- 60 seconds
+sleeptime = 600000000 -- 600 seconds
+numdata = 100
 t=-999
 h=-999
+
 
 pcall(function()
   _status, t, h, _temp_dec, _humi_dec = dht.read(4)
@@ -24,11 +26,10 @@ if t ~= -999 then
   
   rtcfifo.put(tm, t, 0, "t")
   rtcfifo.put(tm, h, 0, "h")
-  print("put", t, h)
   
   local count = rtcfifo.count()
-  print("count", count)
-  if count >= 100 then
+  print("put", t, h, count)
+  if count >= numdata then
     print("do http")
   
     local tabl = {}
@@ -60,6 +61,7 @@ if t ~= -999 then
     node.dsleep(sleeptime)
   end
 else
+  print("no DHT connection")
   node.dsleep(sleeptime)
 end
 
