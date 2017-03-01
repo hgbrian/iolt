@@ -1,15 +1,31 @@
 dofile("credentials.lua")
-
+print("main")
 sleeptime = 600000000 -- 600 seconds
 numdata = 100
 t=-999
 h=-999
 
 
-pcall(function()
-  _status, t, h, _temp_dec, _humi_dec = dht.read(4)
+for i=1,3 do
+    pcall(function()
+        _status, t, h, _temp_dec, _humi_dec = dht.read(4)
+    end
+    )
+    
+    print( "status", _status, t, h, _temp_dev, _humi_dec )
+    if _status == dht.OK then
+        print( "DHT OK." )
+    elseif _status == dht.ERROR_CHECKSUM then
+        print( "DHT Checksum error." )
+    elseif _status == dht.ERROR_TIMEOUT then
+        print( "DHT timed out." )
+    end
+    
+    tmr.delay(100000)
+    if t ~= -999 then
+        break
+    end
 end
-)
 
 if t ~= -999 then
   
