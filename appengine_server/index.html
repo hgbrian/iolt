@@ -11,19 +11,42 @@
 var data = {{data|safe}};
 
 $(function() {
-var chart = d3.timeseries()
-          .addSerie(data,{x:'date', y:'t', ci_up:'t_ci_up', ci_down:'t_ci_down'}, 
+var data1 = [];
+for (var i=0; i<data.length; i++) {
+    if (data[i]['n'] == '') {
+        data1.push(data[i]);
+    }
+}
+
+var chart1 = d3.timeseries()
+          .addSerie(data1,{x:'date', y:'t', ci_up:'t_ci_up', ci_down:'t_ci_down'}, 
                          {interpolate:'linear', color:"#a6cee3", label:"temperature"})
-          .addSerie(data,{x:'date', y:'h', ci_up:'h_ci_up', ci_down:'h_ci_down'}, 
+          .addSerie(data1,{x:'date', y:'h', ci_up:'h_ci_up', ci_down:'h_ci_down'}, 
                          {interpolate:'linear', color:"#c6aeb3", label:"humidity"})
           .width(1200)
-chart('#chart')
+chart1('#chart1')
+
+var data2 = [];
+for (var i=0; i<data.length; i++) {
+    if (data[i]['n'] == 'dht22') {
+        data2.push(data[i]);
+    }
+}
+
+var chart2 = d3.timeseries()
+          .addSerie(data2,{x:'date', y:'t', ci_up:'t_ci_up', ci_down:'t_ci_down'}, 
+                         {interpolate:'linear', color:"#a6cee3", label:"temperature"})
+          .addSerie(data2,{x:'date', y:'h', ci_up:'h_ci_up', ci_down:'h_ci_down'}, 
+                         {interpolate:'linear', color:"#c6aeb3", label:"humidity"})
+          .width(1200)
+chart2('#chart2')
 });
 
 </script>
 
 <body>
 <h1>Temperature and Humidity</h1>
-<div id="chart"></div>
+<div id="chart1"></div>
+<div id="chart2"></div>
 </body>
 </html>

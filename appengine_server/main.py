@@ -22,7 +22,7 @@ class MainPage(webapp2.RequestHandler):
 
     def get(self, tname):
         """reading every 10 minutes of temperature (C) and humidity (RH)"""
-        N = 10 # take the median, percentiles
+        MIN, N = 10, 10 # take the median, percentiles of N readings
         datastr = []
         for d in Reading.query():
             cname = d.name
@@ -31,7 +31,7 @@ class MainPage(webapp2.RequestHandler):
             ts = [_t*1.8+32 for _t in th[-2::-2]] # C to F
             hs = th[-1::-2]
             for n in range(0, len(ts), N):
-                cdate = cdate - timedelta(minutes=10)
+                cdate = cdate - timedelta(minutes=MIN*N)
                 tn = ts[n:n+N]
                 tn.sort()
                 t_med = tn[len(tn)//2]
