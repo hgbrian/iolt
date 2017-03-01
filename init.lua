@@ -13,4 +13,4 @@ end
 
 --tmr.stop(1)
 print("You have 1 second to abort")
-tmr.alarm(0, 100, tmr.ALARM_SINGLE, startup)
+tmr.alarm(0, 1000, tmr.ALARM_SINGLE, startup)
