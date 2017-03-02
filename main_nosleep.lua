@@ -1,7 +1,7 @@
 dofile("credentials.lua")
 print("main")
 sleeptime = 600000000 -- 1000000 per second
-numdata = 100
+numdata = 10
 t=-999
 h=-999
 

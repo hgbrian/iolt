@@ -31,7 +31,6 @@ class MainPage(webapp2.RequestHandler):
             ts = [_t*1.8+32 for _t in th[-2::-2]] # C to F
             hs = th[-1::-2]
             for n in range(0, len(ts), N):
-                cdate = cdate - timedelta(minutes=MIN*N)
                 tn = ts[n:n+N]
                 tn.sort()
                 t_med = tn[len(tn)//2]
@@ -44,6 +43,8 @@ class MainPage(webapp2.RequestHandler):
                 
                 datastr.append("{n:'%s',date:new Date('%s'),t:%s,h:%s,t_ci_down:%s,t_ci_up:%s,h_ci_down:%s,h_ci_up:%s}," %
                     (cname, cdate, t_med, h_med, t1, t9, h1, h9))
+
+                cdate = cdate - timedelta(minutes=MIN*N)
         
         path = os.path.join(os.path.dirname(__file__), "index.html")
         index = template.render(path, {'data': '[' + '\n'.join(sorted(datastr)).rstrip(',') + ']'})
