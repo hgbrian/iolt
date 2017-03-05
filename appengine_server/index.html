@@ -1,55 +1,95 @@
+
 <html>
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://d3js.org/d3.v3.min.js"></script>
-<script src="js/d3_timeseries.js"></script>
-<link rel="stylesheet" type="text/css" href="js/d3_timeseries.css"> 
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
+<script src="js/metricsgraphics.min.js"></script>
+<link rel="stylesheet" type="text/css" href="js/metricsgraphics.css">
+
+<style>
+body {
+  font-family:'Open Sans', sans-serif;
+}
+</style>
 </head>
 
 <script>
-//var data = [{date:new Date('2017-02-20 (00:28:31.878) PST'),t:150,h:124,t_ci_up:170,t_ci_down:100,h_ci_up:170,h_ci_down:108},];
 var data = {{data|safe}};
+/*
+{n:'dht22',date:new Date('2017-02-20 19:10:46.888471'),t:42,t_ci_down:36,t_ci_up:45,h:52,h_ci_down:46,h_ci_up:58},
+{n:'dht22',date:new Date('2017-02-21 19:10:46.888471'),t:41,t_ci_down:36,t_ci_up:48,h:51,h_ci_down:46,h_ci_up:58},
+{n:'',date:new Date('2017-02-19 15:10:46.888471'),t:40,t_ci_down:47,t_ci_up:48,h:50,h_ci_down:47,h_ci_up:58},
+{n:'',date:new Date('2017-02-20 16:10:46.888471'),t:41,t_ci_down:35,t_ci_up:48,h:51,h_ci_down:45,h_ci_up:58},
+{n:'',date:new Date('2017-02-20 19:10:46.888471'),t:42,t_ci_down:36,t_ci_up:45,h:52,h_ci_down:46,h_ci_up:58},
+{n:'',date:new Date('2017-02-21 19:10:46.888471'),t:41,t_ci_down:36,t_ci_up:48,h:51,h_ci_down:46,h_ci_up:58},
+];
+*/
+
+var alldata = {};
+var sensors = ['','dht22'];
+for (var i=0; i<sensors.length; i++) {
+    alldata[sensors[i]] = [[],[]];
+}
+console.log("all",alldata);
 
 $(function() {
-var data1 = [];
+
+var min_date = 999999999999999;
+var max_date = -1;
+
+// Parse data into correct format
 for (var i=0; i<data.length; i++) {
-    if (data[i]['n'] == '') {
-        data1.push(data[i]);
-    }
+    var d = data[i];
+    console.log(d)
+    var pdata_t = alldata[d['n']][0];
+    var pdata_h = alldata[d['n']][1];
+
+    pdata_t.push({'date':d['date']});
+    pdata_t[pdata_t.length-1]['v'] = d['t'];
+    pdata_t[pdata_t.length-1]['v_ci_down'] = d['t_ci_down'];
+    pdata_t[pdata_t.length-1]['v_ci_up'] = d['t_ci_up'];
+
+    pdata_h.push({'date':d['date']});
+    pdata_h[pdata_h.length-1]['v'] = d['h']
+    pdata_h[pdata_h.length-1]['v_ci_down'] = d['h_ci_down'];
+    pdata_h[pdata_h.length-1]['v_ci_up'] = d['h_ci_up'];
+
+    if (d['date'] < min_date) { min_date = d['date']; }
+    if (d['date'] > max_date) { max_date = d['date']; }
 }
 
-var chart1 = d3.timeseries()
-          .addSerie(data1,{x:'date', y:'t', ci_up:'t_ci_up', ci_down:'t_ci_down'}, 
-                         {interpolate:'linear', color:"#a6cee3", label:"temperature"})
-          .addSerie(data1,{x:'date', y:'h', ci_up:'h_ci_up', ci_down:'h_ci_down'}, 
-                         {interpolate:'linear', color:"#c6aeb3", label:"humidity"})
-          .width(1200)
-chart1('#chart1')
-
-var data2 = [];
-for (var i=0; i<data.length; i++) {
-    if (data[i]['n'] == 'dht22') {
-        data2.push(data[i]);
-    }
+for (var i=0; i < sensors.length; i++) {
+    var s = sensors[i];
+    MG.data_graphic({
+        title: "Temperature & Humidity "+s,
+        data: [alldata[s][0], alldata[s][1]],
+        legend: ['temp', 'hum'],
+        colors: ['rgb(255,100,43)', 'rgb(40,150,140)'],
+        aggregate_rollover: true,
+        width: 1200,
+        height: 400,
+        right: 50,
+        area: false,
+        target: '#chart_'+s,
+        x_accessor: 'date',
+        y_accessor: 'v',
+        min_x: min_date,
+        max_x: max_date,
+        show_secondary_x_label: true,
+        show_confidence_band: ['v_ci_down', 'v_ci_up'],
+        x_extended_ticks: true
+    });
 }
 
-var chart2 = d3.timeseries()
-          .addSerie(data2,{x:'date', y:'t', ci_up:'t_ci_up', ci_down:'t_ci_down'}, 
-                         {interpolate:'linear', color:"#a6cee3", label:"temperature"})
-          .addSerie(data2,{x:'date', y:'h', ci_up:'h_ci_up', ci_down:'h_ci_down'}, 
-                         {interpolate:'linear', color:"#c6aeb3", label:"humidity"})
-          .width(1200)
-chart2('#chart2')
 });
 
 </script>
 
 <body>
-<h1>Temperature and Humidity</h1>
+<div id="chart_"></div>
 <hr/>
-<h2>DHT11</h2>
-<div id="chart1"></div>
-<h2>DHT22</h2>
-<div id="chart2"></div>
+<div id="chart_dht22"></div>
 </body>
 </html>
+
