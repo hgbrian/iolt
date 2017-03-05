@@ -41,7 +41,7 @@ class MainPage(webapp2.RequestHandler):
                 h_med = hn[len(hn)//2]
                 h1, h9 = hn[0], hn[-1]
                 
-                datastr.append("{n:'%s',date:new Date('%s'),t:%s,h:%s,t_ci_down:%s,t_ci_up:%s,h_ci_down:%s,h_ci_up:%s}," %
+                datastr.append("{n:'%s',date:'%s',t:%s,h:%s,t_ci_down:%s,t_ci_up:%s,h_ci_down:%s,h_ci_up:%s}," %
                     (cname, cdate, t_med, h_med, t1, t9, h1, h9))
 
                 cdate = cdate - timedelta(minutes=MIN*N)

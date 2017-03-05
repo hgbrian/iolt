@@ -1,9 +1,8 @@
 
 <html>
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://d3js.org/d3.v4.min.js"></script>
-
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="//d3js.org/d3.v4.min.js"></script>
 <script src="js/metricsgraphics.min.js"></script>
 <link rel="stylesheet" type="text/css" href="js/metricsgraphics.css">
 
@@ -16,15 +15,15 @@ body {
 
 <script>
 var data = {{data|safe}};
-/*
-{n:'dht22',date:new Date('2017-02-20 19:10:46.888471'),t:42,t_ci_down:36,t_ci_up:45,h:52,h_ci_down:46,h_ci_up:58},
-{n:'dht22',date:new Date('2017-02-21 19:10:46.888471'),t:41,t_ci_down:36,t_ci_up:48,h:51,h_ci_down:46,h_ci_up:58},
-{n:'',date:new Date('2017-02-19 15:10:46.888471'),t:40,t_ci_down:47,t_ci_up:48,h:50,h_ci_down:47,h_ci_up:58},
-{n:'',date:new Date('2017-02-20 16:10:46.888471'),t:41,t_ci_down:35,t_ci_up:48,h:51,h_ci_down:45,h_ci_up:58},
-{n:'',date:new Date('2017-02-20 19:10:46.888471'),t:42,t_ci_down:36,t_ci_up:45,h:52,h_ci_down:46,h_ci_up:58},
-{n:'',date:new Date('2017-02-21 19:10:46.888471'),t:41,t_ci_down:36,t_ci_up:48,h:51,h_ci_down:46,h_ci_up:58},
-];
-*/
+/*data = [
+{n:'dht22',date:'2017-02-20 19:10:46.888471',t:42,t_ci_down:36,t_ci_up:45,h:52,h_ci_down:46,h_ci_up:58},
+{n:'dht22',date:'2017-02-21 19:10:46.888471',t:41,t_ci_down:36,t_ci_up:48,h:51,h_ci_down:46,h_ci_up:58},
+{n:'',date:'2017-02-19 15:10:46.888471',t:40,t_ci_down:47,t_ci_up:48,h:50,h_ci_down:47,h_ci_up:58},
+{n:'',date:'2017-02-20 16:10:46.888471',t:41,t_ci_down:35,t_ci_up:48,h:51,h_ci_down:45,h_ci_up:58},
+{n:'',date:'2017-02-20 19:10:46.888471',t:42,t_ci_down:36,t_ci_up:45,h:52,h_ci_down:46,h_ci_up:58},
+{n:'',date:'2017-02-21 19:10:46.888471',t:41,t_ci_down:36,t_ci_up:48,h:51,h_ci_down:46,h_ci_up:58},
+];*/
+
 
 var alldata = {};
 var sensors = ['','dht22'];
@@ -38,9 +37,13 @@ $(function() {
 var min_date = 999999999999999;
 var max_date = -1;
 
+//data = MG.convert.date(data, 'date');
+
 // Parse data into correct format
 for (var i=0; i<data.length; i++) {
     var d = data[i];
+    d['date'] = new Date(d['date'].replace(/-/g,'/').replace(/.\d+$/,'')); // Safari!
+
     console.log(d)
     var pdata_t = alldata[d['n']][0];
     var pdata_h = alldata[d['n']][1];
